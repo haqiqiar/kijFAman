@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import javax.crypto.KeyGenerator;
 
 /** original ->http://www.dreamincode.net/forums/topic/262304-simple-client-and-server-chat-program/
  * 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 public class Main {
     // Tid-User list
+   
     public static volatile ArrayList<Pair<Socket,String>> _loginlist = new ArrayList<>();
     public static final User user = new User();
     public static final ArrayList<Pair<String,String>> _userlist = user.getUserList();
