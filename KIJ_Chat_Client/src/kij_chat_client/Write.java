@@ -42,7 +42,6 @@ public class Write implements Runnable {
                                 if (input.contains("logout")) {
                                     if (log.contains("true"))
                                         keepGoing = false;
-                                    
                                 }
 			}
 		}

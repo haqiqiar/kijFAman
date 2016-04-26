@@ -29,30 +29,31 @@ public class Read implements Runnable {
         @Override
 	public void run()//INHERIT THE RUN METHOD FROM THE Runnable INTERFACE
 	{
-		try
-		{
-			while (keepGoing)//WHILE THE PROGRAM IS RUNNING
-			{						
-				if(this.in.hasNext()) {
-                                                                   //IF THE SERVER SENT US SOMETHING
-                                        input = this.in.nextLine();
-					System.out.println(input);//PRINT IT OUT
-                                        if (input.split(" ")[0].toLowerCase().equals("success")) {
-                                            if (input.split(" ")[1].toLowerCase().equals("logout")) {
-                                                keepGoing = false;
-                                            } else if (input.split(" ")[1].toLowerCase().equals("login")) {
-                                                log.clear();
-                                                log.add("true");
-                                            }
-                                        }
-                                        
-                                }
-                                
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();//MOST LIKELY WONT BE AN ERROR, GOOD PRACTICE TO CATCH THOUGH
-		} 
+            try
+            {
+                while (keepGoing)//WHILE THE PROGRAM IS RUNNING
+                {						
+                    if(this.in.hasNext()) {
+                            //IF THE SERVER SENT US SOMETHING
+                        input = this.in.nextLine();
+                        if (!input.split(" ")[0].toLowerCase().equals("hello"))
+                            System.out.println(input);//PRINT IT OUT
+                        if (input.split(" ")[0].toLowerCase().equals("success")) {
+                            if (input.split(" ")[1].toLowerCase().equals("logout")) {
+                                keepGoing = false;
+                            } else if (input.split(" ")[1].toLowerCase().equals("login")) {
+                                log.clear();
+                                log.add("true");
+                            }
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                    e.printStackTrace();//MOST LIKELY WONT BE AN ERROR, GOOD PRACTICE TO CATCH THOUGH
+            } 
 	}
 }

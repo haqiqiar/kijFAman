@@ -17,6 +17,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 
@@ -40,41 +41,18 @@ public class RSAEncryption {
      * @throws IOException
      * @throws FileNotFoundException
      */
-    public static void generateKey() {
+    public static KeyPair generateKey() {
         try {
             final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
-            keyGen.initialize(1024);
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
+            keyGen.initialize(2048, random);
             final KeyPair key = keyGen.generateKeyPair();
-
-            File privateKeyFile = new File(PRIVATE_KEY_FILE);
-            File publicKeyFile = new File(PUBLIC_KEY_FILE);
-
-            // Create files to store public and private key
-            if (privateKeyFile.getParentFile() != null) {
-                privateKeyFile.getParentFile().mkdirs();
-            }
-            privateKeyFile.createNewFile();
-
-            if (publicKeyFile.getParentFile() != null) {
-                publicKeyFile.getParentFile().mkdirs();
-            }
-            publicKeyFile.createNewFile();
-
-            // Saving the Public key in a file
-            ObjectOutputStream publicKeyOS = new ObjectOutputStream(
-                    new FileOutputStream(publicKeyFile));
-            publicKeyOS.writeObject(key.getPublic());
-            publicKeyOS.close();
-
-            // Saving the Private key in a file
-            ObjectOutputStream privateKeyOS = new ObjectOutputStream(
-                    new FileOutputStream(privateKeyFile));
-            privateKeyOS.writeObject(key.getPrivate());
-            privateKeyOS.close();
+            
+            return key;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
     /**
