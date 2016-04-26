@@ -53,7 +53,46 @@ public class Write implements Runnable {
     }
     
     private String process(String input) {
-        return null;
+        String[] vals = input.split(" ");
+        String message = "";
+        
+        // LOGIN username password
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("login")) {
+            
+        }
+        
+        // LOGOUT username
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("logout")) {
+            
+        }
+        
+        // PM destUsername ERSA(public_key_destUsername, message)
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("pm")) {
+            
+        }
+        
+        // CG username group_name
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("cg")) {
+            
+        }
+        
+        // GM src_username dest_groupname encrypted
+        // ERSA(public_key_server, [Message||hash])
+        if(vals[0].toLowerCase().equals("gm")) {
+            
+        }
+        
+        // BM srcUsername message
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("bm")) {
+            
+        }
+        
+        return message;
     }
 
 }

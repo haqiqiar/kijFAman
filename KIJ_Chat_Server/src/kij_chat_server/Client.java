@@ -3,7 +3,9 @@ package kij_chat_server;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -56,9 +58,7 @@ public class Client implements Runnable{
                         String[] vals = input.split(" ");
 
 //                        System.out.println(vals[1]);
-                        byte[] public_key_bytes = Base64.getDecoder().decode(vals[1]);
-                        this.public_key = KeyFactory.getInstance("RSA").
-                                generatePublic(new X509EncodedKeySpec(public_key_bytes));
+                        this.public_key = stringToPublic(vals[1]);
 
                         // send back server public_key
                         String message = "HELLO " + KeyHandler.getPublic_key_string();
@@ -66,8 +66,12 @@ public class Client implements Runnable{
 
                         out.println(message + " " + hash);
                         out.flush();
+                        
+                        return;
                     }
-
+                    
+//                    byte[] byte_to_decrypt = Base64.getDecoder().decode(input);
+//                    input = RSAEncryption.decrypt(input, KeyHandler.getPrivate_key());
                     // param LOGIN <userName> <pass> 
                     if (input.split(" ")[0].toLowerCase().equals("login") == true) {
                         String[] vals = input.split(" ");
@@ -88,6 +92,8 @@ public class Client implements Runnable{
                             out.println("FAIL login");
                             out.flush();
                         }
+                        
+                        return;
                     }
 
                     // param LOGOUT
@@ -105,6 +111,8 @@ public class Client implements Runnable{
                             out.println("FAIL logout");
                             out.flush();
                         }
+                        
+                        return;
                     }
 
                     // param PM <userName dst> <message>
@@ -132,6 +140,8 @@ public class Client implements Runnable{
                             out.println("FAIL pm");
                             out.flush();
                         }
+                        
+                        return;
                     }
 
                     // param CG <groupName>
@@ -158,6 +168,8 @@ public class Client implements Runnable{
                             out.println("FAIL cg");
                             out.flush();
                         }
+                        
+                        return;
                     }
 
                     // param GM <groupName> <message>
@@ -194,6 +206,8 @@ public class Client implements Runnable{
                             out.println("FAIL gm");
                             out.flush();
                         }
+                        
+                        return;
                     }
 
                     // param BM <message>
@@ -212,6 +226,8 @@ public class Client implements Runnable{
                                 outDest.flush();
                             }
                         }
+                        
+                        return;
                     }
                 }
             }
@@ -221,7 +237,12 @@ public class Client implements Runnable{
             e.printStackTrace();//MOST LIKELY THERE WONT BE AN ERROR BUT ITS GOOD TO CATCH
         }	
     }
-
+    
+    private PublicKey stringToPublic(String str) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] public_key_bytes = Base64.getDecoder().decode(str);
+        return KeyFactory.getInstance("RSA").
+                generatePublic(new X509EncodedKeySpec(public_key_bytes));
+    }
 }
 
 
