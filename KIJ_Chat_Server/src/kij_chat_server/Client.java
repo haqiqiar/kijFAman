@@ -71,7 +71,7 @@ public class Client implements Runnable{
                     }
                     
                     input = RSAEncryption.decrypt(input, KeyHandler.getPrivate_key());
-                    // System.out.println(input);
+//                    System.out.println(input);
                     // param LOGIN <userName> <pass> 
                     if (input.split(" ")[0].toLowerCase().equals("login") == true) {
                         String[] vals = input.split(" ");
@@ -82,15 +82,12 @@ public class Client implements Runnable{
                                 this.username = vals[1];
                                 this.login = true;
                                 System.out.println("Users count: " + this._loginlist.size());
-                                out.println("SUCCESS login");
-                                out.flush();
+                                this.sendToClient("SUCCESS login", this.public_key, out);
                             } else {
-                                out.println("FAIL login");
-                                out.flush();
+                                this.sendToClient("FAIL login", this.public_key, out);
                             }
                         } else {
-                            out.println("FAIL login");
-                            out.flush();
+                            this.sendToClient("FAIL login", this.public_key, out);
                         }
                         
                         continue;
@@ -103,13 +100,11 @@ public class Client implements Runnable{
                         if (this._loginlist.contains(new Pair(this.socket, this.username)) == true) {
                             this._loginlist.remove(new Pair(this.socket, this.username));
                             System.out.println(this._loginlist.size());
-                            out.println("SUCCESS logout");
-                            out.flush();
+                            this.sendToClient("SUCCESS logout", this.public_key, out);
                             this.socket.close();
                             break;
                         } else {
-                            out.println("FAIL logout");
-                            out.flush();
+                            this.sendToClient("FAIL logout", this.public_key, out);
                         }
                         
                         continue;
@@ -124,21 +119,24 @@ public class Client implements Runnable{
                         for(Pair<Socket, Pair<String, PublicKey>> cur : _loginlist) {
                             if (cur.getSecond().getFirst().equals(vals[1])) {
                                 PrintWriter outDest = new PrintWriter(cur.getFirst().getOutputStream());
+                                PublicKey keyDest = cur.getSecond().getSecond();
                                 String messageOut = "";
-                                for (int j = 2; j<vals.length; j++) {
+                                for (int j = 2; j<vals.length - 1; j++) {
                                     messageOut += vals[j] + " ";
                                 }
                                 System.out.println(this.username + " to " + vals[1] + " : " + messageOut);
-                                outDest.println(this.username + ": " + messageOut);
-                                outDest.flush();
+                                this.sendToClient(this.username + ": " + messageOut, keyDest, outDest);
+//                                outDest.println(this.username + ": " + messageOut);
+//                                outDest.flush();
                                 exist = true;
                             }
                         }
 
                         if (exist == false) {
                             System.out.println("pm to " + vals[1] + " by " + this.username + " failed.");
-                            out.println("FAIL pm");
-                            out.flush();
+                            this.sendToClient("FAIL pm", this.public_key, out);
+//                            out.println("FAIL pm");
+//                            out.flush();
                         }
                         
                         continue;
@@ -161,12 +159,14 @@ public class Client implements Runnable{
                             int total = group.updateGroup(vals[1], this.username, _grouplist);
                             System.out.println("total group: " + total);
                             System.out.println("cg " + vals[1] + " by " + this.username + " successed.");
-                            out.println("SUCCESS cg");
-                            out.flush();
+                            this.sendToClient("SUCCESS cg", this.public_key, out);
+//                            out.println("SUCCESS cg");
+//                            out.flush();
                         } else {
                             System.out.println("cg " + vals[1] + " by " + this.username + " failed.");
-                            out.println("FAIL cg");
-                            out.flush();
+                            this.sendToClient("FAIL cg", this.public_key, out);
+//                            out.println("FAIL cg");
+//                            out.flush();
                         }
                         
                         continue;
@@ -190,21 +190,24 @@ public class Client implements Runnable{
                                     for(Pair<Socket, Pair<String, PublicKey>> cur : _loginlist) {
                                         if (cur.getSecond().getFirst().equals(selGroup.getSecond()) && !cur.getFirst().equals(socket)) {
                                             PrintWriter outDest = new PrintWriter(cur.getFirst().getOutputStream());
+                                            PublicKey keyDest = cur.getSecond().getSecond();
                                             String messageOut = "";
-                                            for (int j = 2; j<vals.length; j++) {
+                                            for (int j = 2; j<vals.length - 1; j++) {
                                                 messageOut += vals[j] + " ";
                                             }
                                             System.out.println(this.username + " to " + vals[1] + " group: " + messageOut);
-                                            outDest.println(this.username + " @ " + vals[1] + " group: " + messageOut);
-                                            outDest.flush();
+                                            this.sendToClient(this.username + " @ " + vals[1] + " group: " +  messageOut, keyDest, outDest);
+//                                            outDest.println(this.username + " @ " + vals[1] + " group: " + messageOut);
+//                                            outDest.flush();
                                         }
                                     }
                                 }
                             }
                         } else {
                             System.out.println("gm to " + vals[1] + " by " + this.username + " failed.");
-                            out.println("FAIL gm");
-                            out.flush();
+                            this.sendToClient("FAIL gm", this.public_key, out);
+//                            out.println("FAIL gm");
+//                            out.flush();
                         }
                         
                         continue;
@@ -217,13 +220,15 @@ public class Client implements Runnable{
                         for(Pair<Socket, Pair<String, PublicKey>> cur : _loginlist) {
                             if (!cur.getFirst().equals(socket)) {
                                 PrintWriter outDest = new PrintWriter(cur.getFirst().getOutputStream());
+                                PublicKey keyDest = cur.getSecond().getSecond();
                                 String messageOut = "";
                                 for (int j = 1; j<vals.length; j++) {
                                     messageOut += vals[j] + " ";
                                 }
                                 System.out.println(this.username + " to alls: " + messageOut);
-                                outDest.println(this.username + " <BROADCAST>: " + messageOut);
-                                outDest.flush();
+                                this.sendToClient(this.username + " <BROADCAST>: " + messageOut, keyDest, outDest);
+//                                outDest.println(this.username + " <BROADCAST>: " + messageOut);
+//                                outDest.flush();
                             }
                         }
                         
@@ -236,6 +241,15 @@ public class Client implements Runnable{
         {
             e.printStackTrace();//MOST LIKELY THERE WONT BE AN ERROR BUT ITS GOOD TO CATCH
         }	
+    }
+    
+    private void sendToClient(String message, PublicKey key, PrintWriter out) throws NoSuchAlgorithmException {
+        String hash = Hashing.hashString(message);
+        message += ' ' + hash;
+        message = RSAEncryption.encrypt(message, key);
+        
+        out.println(message);
+        out.flush();
     }
     
     private PublicKey stringToPublic(String str) throws NoSuchAlgorithmException, InvalidKeySpecException {

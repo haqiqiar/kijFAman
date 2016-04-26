@@ -43,9 +43,12 @@ public class Write implements Runnable {
             while (keepGoing)//WHILE THE PROGRAM IS RUNNING
             {						
                 String input = chat.nextLine();//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
-                // ini harus diolah dulu
-                out.println(RSAEncryption.encrypt(input, KeyHandler.getPublicKey("server")));//SEND IT TO THE SERVER
-                out.println(input);//SEND IT TO THE SERVER
+                // ini harus diolah duluf
+                String[] vals = input.split(" ");
+                if(!vals[0].toLowerCase().equals("hello"))
+                    input = RSAEncryption.encrypt(process(input), 
+                            KeyHandler.getPublicKey("server"));//SEND IT TO THE SERVER
+                out.println(input);
                 out.flush();//FLUSH THE STREAM
 
                 if (input.contains("logout")) {
@@ -62,7 +65,7 @@ public class Write implements Runnable {
     
     private String process(String input) throws NoSuchAlgorithmException {
         String[] vals = input.split(" ");
-        String message = "";
+        String message = input;
         
         // LOGIN username password
         // ERSA(public_key_server, [message || hash])
@@ -102,7 +105,7 @@ public class Write implements Runnable {
         }
         
         String hash = Hashing.hashString(message);
-        return message;
+        return message + ' ' + hash;
     }
 
 }

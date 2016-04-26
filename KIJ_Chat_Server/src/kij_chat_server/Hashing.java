@@ -18,7 +18,7 @@ public class Hashing {
         MessageDigest md = MessageDigest.getInstance("SHA");
         md.update(msg.getBytes());
         byte hash[]= md.digest();
-        String hash_string = String.format("%0128x", new java.math.BigInteger(1, hash));
+        String hash_string = String.format("%032x", new java.math.BigInteger(1, hash));
         
         return hash_string;
     }
