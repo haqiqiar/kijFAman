@@ -8,7 +8,11 @@ package kij_chat_client;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Scanner;
+
+
 
 /**
  *
@@ -20,12 +24,14 @@ public class Write implements Runnable {
     private PrintWriter out;
     boolean keepGoing = true;
     ArrayList<String> log;
-
+    
+    
     public Write(Scanner chat, PrintWriter out, ArrayList<String> log)
     {
         this.chat = chat;
         this.out = out;
         this.log = log;
+        
     }
 
     @Override
@@ -37,6 +43,7 @@ public class Write implements Runnable {
             {						
                 String input = chat.nextLine();//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
                 // ini harus diolah dulu
+                
                 out.println(input);//SEND IT TO THE SERVER
                 out.flush();//FLUSH THE STREAM
 
@@ -53,7 +60,15 @@ public class Write implements Runnable {
     }
     
     private String process(String input) {
-        return null;
+        String[] vals = input.split(" ");
+        if(vals[0] == "pm"){
+            byte[] encryptedWord = RSAEncryption.encrypt(vals[2], KeyHandler.getPublicKey(""));//Public key tujua
+            String temp = new String(encryptedWord);
+            input = vals[0] + vals[1] + temp;
+        }
+       byte[] encryptedMessage = RSAEncryption.encrypt(input, KeyHandler.getPublicKey("server"));
+       String encrypted = new String(encryptedMessage);
+       return encrypted;
     }
 
 }
