@@ -61,6 +61,7 @@ public class Write implements Runnable {
     
     private String process(String input) {
         String[] vals = input.split(" ");
+<<<<<<< HEAD
         if(vals[0] == "pm"){
             byte[] encryptedWord = RSAEncryption.encrypt(vals[2], KeyHandler.getPublicKey(""));//Public key tujua
             String temp = new String(encryptedWord);
@@ -69,6 +70,47 @@ public class Write implements Runnable {
        byte[] encryptedMessage = RSAEncryption.encrypt(input, KeyHandler.getPublicKey("server"));
        String encrypted = new String(encryptedMessage);
        return encrypted;
+=======
+        String message = "";
+        
+        // LOGIN username password
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("login")) {
+            
+        }
+        
+        // LOGOUT username
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("logout")) {
+            
+        }
+        
+        // PM destUsername ERSA(public_key_destUsername, message)
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("pm")) {
+            
+        }
+        
+        // CG username group_name
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("cg")) {
+            
+        }
+        
+        // GM src_username dest_groupname encrypted
+        // ERSA(public_key_server, [Message||hash])
+        if(vals[0].toLowerCase().equals("gm")) {
+            
+        }
+        
+        // BM srcUsername message
+        // ERSA(public_key_server, [message || hash])
+        if(vals[0].toLowerCase().equals("bm")) {
+            
+        }
+        
+        return message;
+>>>>>>> 42de7ca858c480c1fc5f0dcd625bf17d40c3ca3c
     }
 
 }
