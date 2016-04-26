@@ -43,14 +43,15 @@ public class Read implements Runnable {
                             //IF THE SERVER SENT US SOMETHING
                         input = this.in.nextLine();
                         if (!input.split(" ")[0].toLowerCase().equals("hello")) {
+                            input = RSAEncryption.decrypt(input, KeyHandler.getPrivate_key());
                             System.out.println(input);//PRINT IT OUT
                         } else {
                             // HELLO <public_key>
                             String[] vals = input.split(" ");
                             KeyHandler.putPublicKey("server", stringToPublic(vals[1]));
-                            
-                            // System.out.println(KeyHandler.getPublicKey("server"));
+                            continue;
                         }
+                        
                         if (input.split(" ")[0].toLowerCase().equals("success")) {
                             if (input.split(" ")[1].toLowerCase().equals("logout")) {
                                 keepGoing = false;

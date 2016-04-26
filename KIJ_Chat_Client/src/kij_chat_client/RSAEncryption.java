@@ -5,6 +5,7 @@
  */
 package kij_chat_client;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -80,7 +81,7 @@ public class RSAEncryption {
      * @return Encrypted text
      * @throws java.lang.Exception
      */
-    public static byte[] encrypt(String text, PublicKey key) {
+    public static String encrypt(String text, PublicKey key) {
         byte[] cipherText = null;
         try {
             // get an RSA cipher object and print the provider
@@ -88,10 +89,13 @@ public class RSAEncryption {
             // encrypt the plain text using the public key
             cipher.init(Cipher.ENCRYPT_MODE, key);
             cipherText = cipher.doFinal(text.getBytes());
+//            System.out.println("encrypt : " + cipherText.length + '\n' + new String(cipherText));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return cipherText;
+        String ret = Base64.encode(cipherText);
+//        System.out.println("encoded : " + ret.length() + '\n' + ret);
+        return ret;
     }
 
     /**
@@ -102,16 +106,17 @@ public class RSAEncryption {
      * @return plain text
      * @throws java.lang.Exception
      */
-    public static String decrypt(byte[] text, PrivateKey key) {
+    public static String decrypt(String text, PrivateKey key) {
         byte[] dectyptedText = null;
         try {
+            byte[] text_bytes = Base64.decode(text);
+            
             // get an RSA cipher object and print the provider
             final Cipher cipher = Cipher.getInstance(ALGORITHM);
 
             // decrypt the text using the private key
             cipher.init(Cipher.DECRYPT_MODE, key);
-            dectyptedText = cipher.doFinal(text);
-
+            dectyptedText = cipher.doFinal(text_bytes);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

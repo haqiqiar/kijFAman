@@ -7,6 +7,7 @@ package kij_chat_client;
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -42,9 +43,12 @@ public class Write implements Runnable {
             while (keepGoing)//WHILE THE PROGRAM IS RUNNING
             {						
                 String input = chat.nextLine();//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
-                // ini harus diolah dulu
-                
-                out.println(input);//SEND IT TO THE SERVER
+                // ini harus diolah duluf
+                String[] vals = input.split(" ");
+                if(!vals[0].toLowerCase().equals("hello"))
+                    input = RSAEncryption.encrypt(process(input), 
+                            KeyHandler.getPublicKey("server"));//SEND IT TO THE SERVER
+                out.println(input);
                 out.flush();//FLUSH THE STREAM
 
                 if (input.contains("logout")) {
@@ -59,8 +63,9 @@ public class Write implements Runnable {
         } 
     }
     
-    private String process(String input) {
+    private String process(String input) throws NoSuchAlgorithmException {
         String[] vals = input.split(" ");
+
 /*
         if(vals[0] == "pm"){
             byte[] encryptedWord = RSAEncryption.encrypt(vals[2], KeyHandler.getPublicKey(""));//Public key tujua
@@ -71,7 +76,9 @@ public class Write implements Runnable {
        String encrypted = new String(encryptedMessage);
        return encrypted;
 */
-        String message = "";
+       // String message = "";
+
+        String message = input;
         
         // LOGIN username password
         // ERSA(public_key_server, [message || hash])
@@ -91,13 +98,14 @@ public class Write implements Runnable {
             
         }
         
-        // CG username group_name
+        // CG group_name
         // ERSA(public_key_server, [message || hash])
         if(vals[0].toLowerCase().equals("cg")) {
-            
+//            String hash = Hashing.hashString(input);
+//            message += hash;
         }
         
-        // GM src_username dest_groupname encrypted
+        // GM src_username dest_groupname
         // ERSA(public_key_server, [Message||hash])
         if(vals[0].toLowerCase().equals("gm")) {
             
@@ -109,8 +117,13 @@ public class Write implements Runnable {
             
         }
         
-        return message;
+
+        //return message;
 //>>>>>>> 42de7ca858c480c1fc5f0dcd625bf17d40c3ca3c
+
+        String hash = Hashing.hashString(message);
+        return message + ' ' + hash;
+
     }
 
 }
