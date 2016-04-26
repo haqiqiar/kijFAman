@@ -61,7 +61,7 @@ public class Write implements Runnable {
     
     private String process(String input) {
         String[] vals = input.split(" ");
-<<<<<<< HEAD
+/*
         if(vals[0] == "pm"){
             byte[] encryptedWord = RSAEncryption.encrypt(vals[2], KeyHandler.getPublicKey(""));//Public key tujua
             String temp = new String(encryptedWord);
@@ -70,7 +70,7 @@ public class Write implements Runnable {
        byte[] encryptedMessage = RSAEncryption.encrypt(input, KeyHandler.getPublicKey("server"));
        String encrypted = new String(encryptedMessage);
        return encrypted;
-=======
+*/
         String message = "";
         
         // LOGIN username password
@@ -110,7 +110,7 @@ public class Write implements Runnable {
         }
         
         return message;
->>>>>>> 42de7ca858c480c1fc5f0dcd625bf17d40c3ca3c
+//>>>>>>> 42de7ca858c480c1fc5f0dcd625bf17d40c3ca3c
     }
 
 }
