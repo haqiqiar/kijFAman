@@ -18,9 +18,9 @@ public class Group {
     Group() {
         _grouplist.add(new Pair("Admin", "Admin"));
         _grouplist.add(new Pair("Admin", "Andi"));
-        _grouplist.add(new Pair("User", "Budi"));
-        _grouplist.add(new Pair("User", "Rudi"));
-        _grouplist.add(new Pair("User", "Luci"));
+        _grouplist.add(new Pair("Budi", "Budi"));
+        _grouplist.add(new Pair("Budi", "Rudi"));
+        _grouplist.add(new Pair("Budi", "Luci"));
     }
     
     Group(ArrayList<Pair<String,String>> _grouplist) {
