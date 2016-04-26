@@ -7,6 +7,7 @@ package kij_chat_client;
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -37,7 +38,7 @@ public class Write implements Runnable {
             {						
                 String input = chat.nextLine();//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
                 // ini harus diolah dulu
-                out.println(input);//SEND IT TO THE SERVER
+                out.println(RSAEncryption.encrypt(input, KeyHandler.getPublicKey("server")));//SEND IT TO THE SERVER
                 out.flush();//FLUSH THE STREAM
 
                 if (input.contains("logout")) {
@@ -52,9 +53,9 @@ public class Write implements Runnable {
         } 
     }
     
-    private String process(String input) {
+    private String process(String input) throws NoSuchAlgorithmException {
         String[] vals = input.split(" ");
-        String message = "";
+        String message = input;
         
         // LOGIN username password
         // ERSA(public_key_server, [message || hash])
@@ -74,13 +75,14 @@ public class Write implements Runnable {
             
         }
         
-        // CG username group_name
+        // CG group_name
         // ERSA(public_key_server, [message || hash])
         if(vals[0].toLowerCase().equals("cg")) {
-            
+//            String hash = Hashing.hashString(input);
+//            message += hash;
         }
         
-        // GM src_username dest_groupname encrypted
+        // GM src_username dest_groupname
         // ERSA(public_key_server, [Message||hash])
         if(vals[0].toLowerCase().equals("gm")) {
             
@@ -92,6 +94,7 @@ public class Write implements Runnable {
             
         }
         
+        String hash = Hashing.hashString(message);
         return message;
     }
 

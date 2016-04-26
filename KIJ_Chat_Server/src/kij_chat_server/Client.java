@@ -67,11 +67,11 @@ public class Client implements Runnable{
                         out.println(message + " " + hash);
                         out.flush();
                         
-                        return;
+                        continue;
                     }
                     
-//                    byte[] byte_to_decrypt = Base64.getDecoder().decode(input);
-//                    input = RSAEncryption.decrypt(input, KeyHandler.getPrivate_key());
+                    input = RSAEncryption.decrypt(input, KeyHandler.getPrivate_key());
+                    // System.out.println(input);
                     // param LOGIN <userName> <pass> 
                     if (input.split(" ")[0].toLowerCase().equals("login") == true) {
                         String[] vals = input.split(" ");
@@ -93,7 +93,7 @@ public class Client implements Runnable{
                             out.flush();
                         }
                         
-                        return;
+                        continue;
                     }
 
                     // param LOGOUT
@@ -112,7 +112,7 @@ public class Client implements Runnable{
                             out.flush();
                         }
                         
-                        return;
+                        continue;
                     }
 
                     // param PM <userName dst> <message>
@@ -141,7 +141,7 @@ public class Client implements Runnable{
                             out.flush();
                         }
                         
-                        return;
+                        continue;
                     }
 
                     // param CG <groupName>
@@ -169,7 +169,7 @@ public class Client implements Runnable{
                             out.flush();
                         }
                         
-                        return;
+                        continue;
                     }
 
                     // param GM <groupName> <message>
@@ -207,7 +207,7 @@ public class Client implements Runnable{
                             out.flush();
                         }
                         
-                        return;
+                        continue;
                     }
 
                     // param BM <message>
@@ -227,7 +227,7 @@ public class Client implements Runnable{
                             }
                         }
                         
-                        return;
+                        continue;
                     }
                 }
             }

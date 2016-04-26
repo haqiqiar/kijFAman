@@ -2,8 +2,14 @@ package kij_chat_client;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import static javafx.application.Platform.exit;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 /** original ->http://www.dreamincode.net/forums/topic/262304-simple-client-and-server-chat-program/
  * 
@@ -15,7 +21,7 @@ public class Main {
 	private final static int PORT = 6677;//SET A CONSTANT VARIABLE PORT
 	private final static String HOST = "localhost";//SET A CONSTANT VARIABLE HOST
 	
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, InvalidKeyException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException
 	{
             KeyHandler.generateServerKey();
             try 
