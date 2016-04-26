@@ -18,10 +18,6 @@ import java.util.Scanner;
 public class Client implements Runnable {
 
     private Socket socket;//MAKE SOCKET INSTANCE VARIABLE
-    private static PublicKey public_key;
-    private static PrivateKey private_key;
-    private static String public_key_string;
-    private static String private_key_string;
 
     // use arraylist -> arraylist dapat diparsing as reference
     volatile ArrayList<String> log = new ArrayList<>();
@@ -30,13 +26,11 @@ public class Client implements Runnable {
     {
         socket = s;//INSTANTIATE THE INSTANCE VARIABLE
         log.add(String.valueOf("false"));
-        
-        Client.setKey();
     }
 
     private void sendKeyToServer(PrintWriter pw) throws NoSuchAlgorithmException
     {
-        String message = "HELLO " + public_key_string;
+        String message = "HELLO " + KeyHandler.getPublic_key_string();
         String hash = Hashing.hashString(message);
 
         pw.println(message + " " + hash);
@@ -75,19 +69,4 @@ public class Client implements Runnable {
             e.printStackTrace();//MOST LIKELY WONT BE AN ERROR, GOOD PRACTICE TO CATCH THOUGH
         } 
     }
-
-    public static void setKey() {
-        KeyPair key_pair = RSAEncryption.generateKey();
-        
-        Client.public_key = key_pair.getPublic();
-        Client.private_key = key_pair.getPrivate();
-        
-        Client.public_key_string = Base64.getEncoder().
-                encodeToString(Client.public_key.getEncoded());
-        Client.private_key_string = Base64.getEncoder().
-                encodeToString(Client.private_key.getEncoded());
-    }
-
-
 }
-

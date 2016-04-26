@@ -6,7 +6,13 @@
 package kij_chat_client;
 
 /*import java.net.Socket;*/
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Scanner;
 
 /**
@@ -22,8 +28,8 @@ public class Read implements Runnable {
 	
 	public Read(Scanner in, ArrayList<String> log)
 	{
-		this.in = in;
-                this.log = log;
+            this.in = in;
+            this.log = log;
 	}
     
         @Override
@@ -36,8 +42,15 @@ public class Read implements Runnable {
                     if(this.in.hasNext()) {
                             //IF THE SERVER SENT US SOMETHING
                         input = this.in.nextLine();
-                        if (!input.split(" ")[0].toLowerCase().equals("hello"))
+                        if (!input.split(" ")[0].toLowerCase().equals("hello")) {
                             System.out.println(input);//PRINT IT OUT
+                        } else {
+                            // HELLO <public_key>
+                            String[] vals = input.split(" ");
+                            KeyHandler.putPublicKey("server", stringToPublic(vals[1]));
+                            
+                            // System.out.println(KeyHandler.getPublicKey("server"));
+                        }
                         if (input.split(" ")[0].toLowerCase().equals("success")) {
                             if (input.split(" ")[1].toLowerCase().equals("logout")) {
                                 keepGoing = false;
@@ -56,4 +69,10 @@ public class Read implements Runnable {
                     e.printStackTrace();//MOST LIKELY WONT BE AN ERROR, GOOD PRACTICE TO CATCH THOUGH
             } 
 	}
+
+    private PublicKey stringToPublic(String str) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] public_key_bytes = Base64.getDecoder().decode(str);
+        return KeyFactory.getInstance("RSA").
+                generatePublic(new X509EncodedKeySpec(public_key_bytes));
+    }
 }
