@@ -40,6 +40,7 @@ public class Client implements Runnable {
     @Override
     public void run()//INHERIT THE RUN METHOD FROM THE Runnable INTERFACE
     {
+        
         try
         {
             Scanner chat = new Scanner(System.in);//GET THE INPUT FROM THE CMD

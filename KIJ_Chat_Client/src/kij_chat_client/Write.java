@@ -9,7 +9,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Scanner;
+
+
 
 /**
  *
@@ -21,12 +25,14 @@ public class Write implements Runnable {
     private PrintWriter out;
     boolean keepGoing = true;
     ArrayList<String> log;
-
+    
+    
     public Write(Scanner chat, PrintWriter out, ArrayList<String> log)
     {
         this.chat = chat;
         this.out = out;
         this.log = log;
+        
     }
 
     @Override
@@ -39,6 +45,7 @@ public class Write implements Runnable {
                 String input = chat.nextLine();//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
                 // ini harus diolah dulu
                 out.println(RSAEncryption.encrypt(input, KeyHandler.getPublicKey("server")));//SEND IT TO THE SERVER
+                out.println(input);//SEND IT TO THE SERVER
                 out.flush();//FLUSH THE STREAM
 
                 if (input.contains("logout")) {
@@ -55,7 +62,7 @@ public class Write implements Runnable {
     
     private String process(String input) throws NoSuchAlgorithmException {
         String[] vals = input.split(" ");
-        String message = input;
+        String message = "";
         
         // LOGIN username password
         // ERSA(public_key_server, [message || hash])
