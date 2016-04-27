@@ -53,7 +53,7 @@ public class Client implements Runnable{
 //					out.println("You Said: " + input);//RESEND IT TO THE CLIENT
 //					out.flush();//FLUSH THE STREAM
 
-                    // param HELLO <public_key> <hash>
+                    // param HELLO <public_key>
                     if (input.split(" ")[0].toLowerCase().equals("hello") == true) {
                         String[] vals = input.split(" ");
 
@@ -61,7 +61,7 @@ public class Client implements Runnable{
                         this.public_key = stringToPublic(vals[1]);
 
                         // send back server public_key
-                        String message = "HELLO " + KeyHandler.getPublic_key_string();
+                        String message = "HELLO " + KeyHandler.getPublic_key_string() + " server"; 
                         String hash = Hashing.hashString(message);
 
                         out.println(message + " " + hash);
@@ -71,7 +71,35 @@ public class Client implements Runnable{
                     }
                     
                     input = RSAEncryption.decrypt(input, KeyHandler.getPrivate_key());
-//                    System.out.println(input);
+                    System.out.println(input);
+                    // param RQ <userName>
+                    if (input.split(" ")[0].toLowerCase().equals("rq") == true) {
+                        String[] vals = input.split(" ");
+                        
+                        boolean online = false;
+                        PublicKey pub_key = null;
+                        for(Pair<Socket, Pair<String, PublicKey>> cur : _loginlist) {
+                            if(cur.getSecond().getFirst().equals(vals[1])) {
+                                online = true;
+                                pub_key = cur.getSecond().getSecond();
+                                break;
+                            }
+                        }
+                        
+                        if(online) {
+                        // send back server public_key
+                            String message = "HELLO " + publicToString(pub_key) + " " + vals[1];
+                            String hash = Hashing.hashString(message);
+
+                            out.println(message + " " + hash);
+                            out.flush();
+                        } else {
+                            this.sendToClient("FAIL pm user_offline", this.public_key, out);
+                        }
+                        
+                        continue;
+                    }
+                    
                     // param LOGIN <userName> <pass> 
                     if (input.split(" ")[0].toLowerCase().equals("login") == true) {
                         String[] vals = input.split(" ");
@@ -97,7 +125,7 @@ public class Client implements Runnable{
                     if (input.split(" ")[0].toLowerCase().equals("logout") == true) {
                         String[] vals = input.split(" ");
 
-                        if (this._loginlist.contains(new Pair(this.socket, this.username)) == true) {
+                        if (this._loginlist.contains(new Pair(this.socket, new Pair(this.username, this.public_key))) == true) {
                             this._loginlist.remove(new Pair(this.socket, this.username));
                             System.out.println(this._loginlist.size());
                             this.sendToClient("SUCCESS logout", this.public_key, out);
@@ -125,7 +153,7 @@ public class Client implements Runnable{
                                     messageOut += vals[j] + " ";
                                 }
                                 System.out.println(this.username + " to " + vals[1] + " : " + messageOut);
-                                this.sendToClient(this.username + ": " + messageOut, keyDest, outDest);
+                                this.sendToClient("PM " + this.username + ": " + messageOut, keyDest, outDest);
 //                                outDest.println(this.username + ": " + messageOut);
 //                                outDest.flush();
                                 exist = true;
@@ -256,6 +284,10 @@ public class Client implements Runnable{
         byte[] public_key_bytes = Base64.getDecoder().decode(str);
         return KeyFactory.getInstance("RSA").
                 generatePublic(new X509EncodedKeySpec(public_key_bytes));
+    }
+
+    private String publicToString(PublicKey pub_key) {
+        return Base64.getEncoder().encodeToString(pub_key.getEncoded());
     }
 }
 

@@ -48,7 +48,7 @@ public class Read implements Runnable {
                         } else {
                             // HELLO <public_key>
                             String[] vals = input.split(" ");
-                            KeyHandler.putPublicKey("server", stringToPublic(vals[1]));
+                            KeyHandler.putPublicKey(vals[2], stringToPublic(vals[1]));
                             continue;
                         }
                         
@@ -59,6 +59,11 @@ public class Read implements Runnable {
                                 log.clear();
                                 log.add("true");
                             }
+                        } else if (input.split(" ")[0].toLowerCase().equals("pm")) {
+                            String[] vals = input.split(" +");
+                            System.out.println(vals.length + vals[3]); 
+                            String msg = RSAEncryption.decrypt(vals[2], KeyHandler.getPrivate_key());
+                            System.out.println(vals[1] + " " + msg + " " + vals[3]);
                         }
 
                     }

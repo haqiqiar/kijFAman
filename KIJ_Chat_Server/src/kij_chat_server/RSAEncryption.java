@@ -5,7 +5,7 @@
  */
 package kij_chat_server;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import java.util.Base64;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,6 +19,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 
@@ -82,17 +84,31 @@ public class RSAEncryption {
      * @throws java.lang.Exception
      */
     public static String encrypt(String text, PublicKey key) {
-        byte[] cipherText = null;
+//        byte[] cipherText = null;
+        String ret = "";
         try {
-            // get an RSA cipher object and print the provider
-            final Cipher cipher = Cipher.getInstance(ALGORITHM);
-            // encrypt the plain text using the public key
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            cipherText = cipher.doFinal(text.getBytes());
+            int block_size = 50;
+            List<String> datas = new ArrayList<String>((text.length() + block_size - 1) / block_size);
+
+            for (int start = 0; start < text.length(); start += block_size) {
+                datas.add(text.substring(start, Math.min(text.length(), start + block_size)));
+            }
+
+            for(String data : datas) {
+                // get an RSA cipher object and print the provider
+                final Cipher cipher = Cipher.getInstance(ALGORITHM);
+                // encrypt the plain text using the public key
+                cipher.init(Cipher.ENCRYPT_MODE, key);
+                byte[] cipherText = cipher.doFinal(data.getBytes());
+                ret += Base64.getEncoder().encodeToString(cipherText);
+            }
+//            System.out.println("encrypt : " + cipherText.length + '\n' + new String(cipherText));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return Base64.encode(cipherText);
+//        String ret = Base64.encode(cipherText);
+//        System.out.println("encoded : " + ret.length() + '\n' + ret);
+        return ret;
     }
 
     /**
@@ -104,23 +120,29 @@ public class RSAEncryption {
      * @throws java.lang.Exception
      */
     public static String decrypt(String text, PrivateKey key) {
-        byte[] dectyptedText = null;
+        String ret = "";
         try {
-//            System.out.println("decrypted : " + text.length() + '\n' + text);
-            byte[] text_bytes = Base64.decode(text);
-//            System.out.println("decoded : " + text_bytes.length + '\n' + new String(text_bytes));
-            
-            // get an RSA cipher object and print the provider
-            final Cipher cipher = Cipher.getInstance(ALGORITHM);
+            String[] datas = text.split("==");
+            for(int i=0; i<datas.length; i++) {
+                // get an RSA cipher object and print the provider
+                final Cipher cipher = Cipher.getInstance(ALGORITHM);
+                cipher.init(Cipher.DECRYPT_MODE, key);
+                String data = datas[i];
+                data += "==";
+//                System.out.println("data : " + data);
+                byte[] text_bytes = Base64.getDecoder().decode(data);
 
-            // decrypt the text using the private key
-            cipher.init(Cipher.DECRYPT_MODE, key);
-            dectyptedText = cipher.doFinal(text_bytes);
+                // decrypt the text using the private key
+                byte[] decryptedText = cipher.doFinal(text_bytes);
+                ret += new String(decryptedText);
+//                System.out.println("ret : " + ret);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return new String(dectyptedText);
+//        return new String(decryptedText);
+        return ret;
     }
 
 }
