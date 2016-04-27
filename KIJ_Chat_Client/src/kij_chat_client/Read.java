@@ -48,7 +48,8 @@ public class Read implements Runnable {
                         } else {
                             // HELLO <public_key>
                             String[] vals = input.split(" ");
-                            KeyHandler.putPublicKey("server", stringToPublic(vals[1]));
+                            KeyHandler.putPublicKey(vals[1], stringToPublic(vals[2]));
+                            System.out.println(vals[1]);
                             continue;
                         }
                         

@@ -9,6 +9,7 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
+import java.util.HashMap;
 
 /**
  *
@@ -17,6 +18,7 @@ import java.util.Base64;
 public class KeyHandler {
     private static PublicKey public_key;
     private static PrivateKey private_key;
+    public static volatile HashMap<String, PublicKey> _public_keys = new HashMap<>();
     private static String public_key_string;
     private static String private_key_string;
     
@@ -86,5 +88,16 @@ public class KeyHandler {
      */
     public static void setPrivate_key_string(String aPrivate_key_string) {
         private_key_string = aPrivate_key_string;
+    }
+    
+    public static void putPublicKey(String username, PublicKey key) {
+        if(!_public_keys.containsKey(username))
+            _public_keys.put(username, key);
+    }
+    
+    public static PublicKey getPublicKey(String username) {
+        if(_public_keys.containsKey(username))
+            return _public_keys.get(username);
+        return null;
     }
 }

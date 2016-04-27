@@ -58,15 +58,45 @@ public class Client implements Runnable{
                         String[] vals = input.split(" ");
 
 //                        System.out.println(vals[1]);
-                        this.public_key = stringToPublic(vals[1]);
+                        this.public_key = stringToPublic(vals[2]);
+                        
 
                         // send back server public_key
-                        String message = "HELLO " + KeyHandler.getPublic_key_string();
+                        String message = "HELLO " + "server " + KeyHandler.getPublic_key_string();
                         String hash = Hashing.hashString(message);
 
                         out.println(message + " " + hash);
                         out.flush();
                         
+                        continue;
+                    }
+                    
+                    if (input.split(" ")[0].toLowerCase().equals("rq") == true) {
+                        String[] vals = input.split(" ");
+                        
+                        for(Pair<Socket, Pair< String, PublicKey>> cur : _loginlist) {
+                            System.out.println(cur.getSecond().getFirst());
+                            if(cur.getSecond().getFirst().equals(vals[1])){
+                                
+                                PublicKey key = cur.getSecond().getSecond();
+                                String s = Base64.getEncoder().encodeToString(key.getEncoded());
+                                String user = cur.getSecond().getFirst();
+                                //this.public_key = stringToPublic(vals[2]);
+                                System.out.println(s);
+                                // send back server public_key
+                                String message = "HELLO " + user + " " + s;
+                                String hash = Hashing.hashString(message);
+
+                                out.println(message + " " + hash);
+                                out.flush();
+
+                                continue;
+                            }
+                            else{
+                                System.out.println(vals[1]+ " unfound");
+                            }
+                        }
+
                         continue;
                     }
                     
@@ -82,7 +112,9 @@ public class Client implements Runnable{
                                 this.username = vals[1];
                                 this.login = true;
                                 System.out.println("Users count: " + this._loginlist.size());
-                                this.sendToClient("SUCCESS login", this.public_key, out);
+                                
+                                this.sendToClient("SUCCESS login "+ vals[1], this.public_key, out);
+                                
                             } else {
                                 this.sendToClient("FAIL login", this.public_key, out);
                             }
@@ -171,6 +203,8 @@ public class Client implements Runnable{
                         
                         continue;
                     }
+                    
+                    
 
                     // param GM <groupName> <message>
                     if (input.split(" ")[0].toLowerCase().equals("gm") == true) {

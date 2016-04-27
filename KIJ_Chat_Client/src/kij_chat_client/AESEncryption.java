@@ -106,28 +106,6 @@ public class AESEncryption
         String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
         return encodedKey;
     }
-    
-    public static void main(String args[]) throws NoSuchAlgorithmException
-    {
-                final String strToEncrypt = "My text to encrypt";
-                
-                String key = AESEncryption.generateKey();
-                //final String strPssword = "encryptor key";
-                AESEncryption.setKey(key);
-               
-                AESEncryption.encrypt(strToEncrypt.trim());
-                
-                System.out.println("String to Encrypt: " + strToEncrypt); 
-                System.out.println("Encrypted: " + AESEncryption.getEncryptedString());
-                System.out.println(key);
-           
-                final String strToDecrypt =  AESEncryption.getEncryptedString();
-                AESEncryption.decrypt(strToDecrypt.trim());
-               
-                System.out.println("String To Decrypt : " + strToDecrypt);
-                System.out.println("Decrypted : " + AESEncryption.getDecryptedString());
-        
-    }
      
 }
   

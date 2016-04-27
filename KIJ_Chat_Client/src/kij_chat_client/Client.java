@@ -30,7 +30,7 @@ public class Client implements Runnable {
 
     private void sendKeyToServer(PrintWriter pw) throws NoSuchAlgorithmException
     {
-        String message = "HELLO " + KeyHandler.getPublic_key_string();
+        String message = "HELLO client " + KeyHandler.getPublic_key_string();
         String hash = Hashing.hashString(message);
 
         pw.println(message + " " + hash);

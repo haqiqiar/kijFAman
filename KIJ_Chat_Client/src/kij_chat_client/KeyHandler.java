@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class KeyHandler {
     private static PublicKey public_key;
     private static PrivateKey private_key;
-    private static volatile HashMap<String, PublicKey> _public_keys = new HashMap<>();
+    public static volatile HashMap<String, PublicKey> _public_keys = new HashMap<>();
     private static String public_key_string;
     private static String private_key_string;
     
@@ -91,13 +91,14 @@ public class KeyHandler {
     }
     
     public static void putPublicKey(String username, PublicKey key) {
+        //System.out.println("kh: " + username);
         if(!_public_keys.containsKey(username))
             _public_keys.put(username, key);
     }
     
     public static PublicKey getPublicKey(String username) {
         if(_public_keys.containsKey(username))
-            return _public_keys.get(username);
+            return (_public_keys.get(username));
         return null;
     }
 }
