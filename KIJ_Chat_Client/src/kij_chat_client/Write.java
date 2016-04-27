@@ -68,6 +68,19 @@ public class Write implements Runnable {
     
     private String process(String input) throws NoSuchAlgorithmException {
         String[] vals = input.split(" ");
+
+/*
+        if(vals[0] == "pm"){
+            byte[] encryptedWord = RSAEncryption.encrypt(vals[2], KeyHandler.getPublicKey(""));//Public key tujua
+            String temp = new String(encryptedWord);
+            input = vals[0] + vals[1] + temp;
+        }
+       byte[] encryptedMessage = RSAEncryption.encrypt(input, KeyHandler.getPublicKey("server"));
+       String encrypted = new String(encryptedMessage);
+       return encrypted;
+*/
+       // String message = "";
+
         String message = input;
         
         // LOGIN username password
@@ -112,8 +125,13 @@ public class Write implements Runnable {
             
         }
         
+
+        //return message;
+//>>>>>>> 42de7ca858c480c1fc5f0dcd625bf17d40c3ca3c
+
         String hash = Hashing.hashString(message);
         return message + ' ' + hash;
+
     }
 
 }
