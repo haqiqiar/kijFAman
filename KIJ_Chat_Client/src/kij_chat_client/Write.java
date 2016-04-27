@@ -5,12 +5,14 @@
  */
 package kij_chat_client;
 
+import static com.sun.imageio.plugins.common.LZWStringTable.hash;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import static java.util.Objects.hash;
 import java.util.Scanner;
 
 
@@ -26,6 +28,7 @@ public class Write implements Runnable {
     boolean keepGoing = true;
     ArrayList<String> log;
     
+    Hashing hash = new Hashing();
     
     public Write(Scanner chat, PrintWriter out, ArrayList<String> log)
     {
@@ -70,6 +73,11 @@ public class Write implements Runnable {
         // LOGIN username password
         // ERSA(public_key_server, [message || hash])
         if(vals[0].toLowerCase().equals("login")) {
+            //hashing password
+            Hashing hashing = new Hashing();
+            String hashResult = Hashing.hashString(vals[2]);
+            
+            
             
         }
         
